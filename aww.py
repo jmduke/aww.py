@@ -4,8 +4,19 @@ import urllib2
 import StringIO
 import sys
 
+# TODO: Error handling.  
+# Works if Reddit's permalink is an absolute image;
+# will require some finagling down the line to make it work
+# with the inevitable edge cases. 
+
 # This is where the magic happens.
-def grab_cute_image(username = None):
+def grab_cute_image(username = None, trials = 3):
+	
+	# three trials to grab an acceptable image;
+	# if no dice, exit
+	if trials == 0:
+		print "Unable to retrieve images after three tries :(."
+		exit()
 	
 	# Grab the JSON of the r/aww subreddit, which displays
 	# adorable images -- and convert it to a dict.
@@ -41,7 +52,7 @@ def grab_cute_image(username = None):
 	
 	# What's a silly side project without unncessary recursion?
 	except Exception, e:
-		grab_cute_image()
+		grab_cute_image(username, trials - 1)
 		
 if len(sys.argv) < 2:
 	grab_cute_image()
