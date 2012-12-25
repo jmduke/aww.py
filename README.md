@@ -13,6 +13,10 @@ And then...
 
     $ aww
     
+And then...
+
+![A cute lil picture!](http://i.imgur.com/X3Q4u.jpg)
+
 To call the Reddit API with your username, use:
 
     $ python aww.py your_username
