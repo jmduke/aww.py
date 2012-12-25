@@ -2,7 +2,6 @@ from random import randint
 from PIL import Image
 import urllib2
 import StringIO
-import ast
 import sys
 
 # This is where the magic happens.
