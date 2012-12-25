@@ -1,23 +1,22 @@
 from random import randint
 from PIL import Image
+import json
 import urllib2
 import StringIO
 import sys
-import json
 
-# TODO: Error handling.  
+# TODO: Error handling.
 # Works if Reddit's permalink is an absolute image;
 # will require some finagling down the line to make it work
-# with the inevitable edge cases. 
+# with the inevitable edge cases.
 
 # This is where the magic happens.
 def grab_cute_image(username = None, trials = 3):
 	
 	# three trials to grab an acceptable image;
-	# if no dice, exit
+	# if no dice, return None
 	if trials == 0:
-		print "Unable to retrieve images after three tries :(."
-		exit()
+		return None
 	
 	# Grab the JSON of the r/aww subreddit, which displays
 	# adorable images -- and convert it to a dict.
@@ -29,13 +28,13 @@ def grab_cute_image(username = None, trials = 3):
 		opener.addheaders = [('User-agent', 'aww.py, invoked by /u/' + username)]
 	else:
 		opener.addheaders = [('User-agent', 'aww.py, a CLI for r/aww!')]
-		
+            
 	response = opener.open(cuteness_url).read()
 	j = json.loads(response)
 	
 	# By default, a subreddit displays the top 25 images;
 	# we grab a random one of those
-	random_index = randint(0, 24) 
+	random_index = randint(0, 24)
 	
 	# Next, we navigate the json and grab the link (generally imgur)
 	# to the adorable image in question.
@@ -45,16 +44,40 @@ def grab_cute_image(username = None, trials = 3):
 	img = urllib2.urlopen(image_link).read()
 	
 	# Make sure everything works nice;
-	# if it does, show the image using PIL.
+	# if it does, return our image
 	try:
 		im = Image.open(StringIO.StringIO(img))
-		im.show()
+		return im
 	
 	# What's a silly side project without unncessary recursion?
 	except Exception, e:
-		grab_cute_image(username, trials - 1)
-		
-if len(sys.argv) < 2:
-	grab_cute_image()
-else:
-	grab_cute_image(sys.argv[1])
+		return grab_cute_image(username, trials - 1)
+
+
+# A main to parse command-line arguments and display the image (if possible)
+def main(argv=None):
+	if argv is None:
+		argv = sys.argv
+	argc = len(argv)
+    
+	im = None
+	if argc < 2:
+		im = grab_cute_image()
+	else:
+		im = grab_cute_image(argv[1])
+    
+	# If we fail to fetch an image, display an error-message
+	if im is None:
+		print "Unable to retrieve images after three tries :(."
+		return 1
+    
+	# Display our image using PIL
+	im.show()
+    
+	# All is well with the world
+	return 0
+
+
+# Only call main() if this program is run directly (or, don't run if it's imported)
+if __name__ == '__main__':
+	sys.exit(main())
