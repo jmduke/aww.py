@@ -3,6 +3,7 @@ from PIL import Image
 import urllib2
 import StringIO
 import sys
+import json
 
 # TODO: Error handling.  
 # Works if Reddit's permalink is an absolute image;
@@ -29,9 +30,8 @@ def grab_cute_image(username = None, trials = 3):
 	else:
 		opener.addheaders = [('User-agent', 'aww.py, a CLI for r/aww!')]
 		
-	json = opener.open(cuteness_url).read()
-	(true,false,null) = (True,False,None) # Booleans can be funky.
-	json = eval(json)
+	response = opener.open(cuteness_url).read()
+	j = json.loads(response)
 	
 	# By default, a subreddit displays the top 25 images;
 	# we grab a random one of those
@@ -39,7 +39,7 @@ def grab_cute_image(username = None, trials = 3):
 	
 	# Next, we navigate the json and grab the link (generally imgur)
 	# to the adorable image in question.
-	image_link = json['data']['children'][random_index]['data']['url']
+	image_link = j['data']['children'][random_index]['data']['url']
 	
 	# Now, we open the link with imgur!
 	img = urllib2.urlopen(image_link).read()
