@@ -7,19 +7,21 @@ A CLI for adorable pictures.
 
 Installing is simple.
 
-    $ alias aww="python <wherever>/aww.py"
-    
+    $ git clone https://github.com/dukerson/aww.py.git
+    $ cd aww
+    $ python setup.py install
+
 And then...
 
     $ aww
-    
+
 And then...
 
 ![A cute lil picture!](http://i.imgur.com/X3Q4u.jpg)
 
 To call the Reddit API with your username, use:
 
-    $ python aww.py your_username
+    $ aww your_username
 
 ## Requirements
 
