@@ -8,7 +8,7 @@ A CLI for adorable pictures.
 Installing is simple.
 
     $ git clone https://github.com/dukerson/aww.py.git
-    $ cd aww
+    $ cd aww.py/
     $ python setup.py install
 
 And then...
